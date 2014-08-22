@@ -51,7 +51,7 @@ struct instance
   my_array<long double, num_flatperm_indices> Re2W, Rg2W, Rm2W;
 
   boost::posix_time::ptime start_time;
-  std::ofstream debug;
+  // std::ofstream debug;
 
   //////////////////////////////////////////////////////////////////////
 
@@ -67,7 +67,7 @@ struct instance
     , Re2W{flatperm.extents}
     , Rg2W{flatperm.extents}
     , Rm2W{flatperm.extents}
-    , debug("debug.txt")
+    // , debug("debug.txt")
   {
   }
 
@@ -168,11 +168,11 @@ struct instance
 //       abort();
 //     }
 
-    if (n == N) {
-      for (auto k : flatperm.indices)
-        debug << k << " ";
-      debug << walk << "\n";
-    }
+//     if (n == N) {
+//       for (auto k : flatperm.indices)
+//         debug << k << " ";
+//       debug << walk << "\n";
+//     }
   }
 
   void unregister_step()
