@@ -17,3 +17,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS} ${HDF5_INC
 add_executable(main main.cpp)
 target_link_libraries(main ${Boost_LIBRARIES} ${HDF5_LIBRARIES})
 
+if (CMAKE_HOST_UNIX)
+  target_link_libraries(main pthread dl)
+endif (CMAKE_HOST_UNIX)
+
