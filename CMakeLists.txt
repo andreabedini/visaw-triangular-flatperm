@@ -1,7 +1,7 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 2.8)
 project (visaw-triangular)
 
-set(Boost_USE_STATIC_LIBS    on) 
+set(Boost_USE_STATIC_LIBS    on)
 set(Boost_USE_STATIC_RUNTIME on)
 find_package(Boost REQUIRED COMPONENTS date_time program_options system thread)
 
