@@ -50,9 +50,10 @@ struct instance
   features::multiplicity<walk_type> multiplicity;
   my_array<long double, num_flatperm_indices> Re2W, Rg2W, Rm2W;
 
-  boost::posix_time::ptime start_time;
-  // std::ofstream debug;
+  my_array<long double, num_flatperm_indices - 1> sampled_weights;
+  my_array<int, num_flatperm_indices + 1> sampled_walks;
 
+  boost::posix_time::ptime start_time;
   //////////////////////////////////////////////////////////////////////
 
   instance(unsigned int N, double mu)
@@ -67,7 +68,9 @@ struct instance
     , Re2W{flatperm.extents}
     , Rg2W{flatperm.extents}
     , Rm2W{flatperm.extents}
-    // , debug("debug.txt")
+    // initialise sampled_weights and sampled_walks
+    , sampled_weights({flatperm.extents[1]})
+    , sampled_walks  ({flatperm.extents[1], flatperm.extents[0], 2})
   {
   }
 
@@ -124,6 +127,8 @@ struct instance
 
     std::string const time_str = to_simple_string(now);
     H5LTset_attribute_string(loc.getId(), ".", "time", time_str.c_str());
+
+    std::cerr << "walks, "; hdf5::save(loc, sampled_walks, "sampled_walks");
   }
 
   std::vector<point> atmosphere() const
@@ -158,21 +163,19 @@ struct instance
     Rg2W(flatperm.indices) += W * Rg2;
     Rm2W(flatperm.indices) += W * Rm2;
 
-//     std::cerr << n << " "
-//       << multiplicity.get<1>() << " "
-//       << multiplicity.get<2>() << " "
-//       << multiplicity.get<3>() << "\n";
-//
-//     if(! (n == multiplicity.get<1>() + 2*multiplicity.get<2>() + 3*multiplicity.get<3>())) {
-//       std::cerr << walk;
-//       abort();
-//     }
-
-//     if (n == N) {
-//       for (auto k : flatperm.indices)
-//         debug << k << " ";
-//       debug << walk << "\n";
-//     }
+    if (n == N) {
+			auto m1 = flatperm.indices[1];
+      auto m2 = flatperm.indices[2];
+			if (W > sampled_weights[m1][m2]) {
+				sampled_weights[m1][m2] = W;
+				int i = 0;
+				for(auto const& xy : walk) {
+					sampled_walks[m1][m2][i][0] = xy[0];
+					sampled_walks[m1][m2][i][1] = xy[1];
+					i += 1;
+				}
+			}
+		}
   }
 
   void unregister_step()
