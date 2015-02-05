@@ -4,6 +4,7 @@
 #include "hdf5pp/hdf5.hpp"
 
 #include <algorithm>
+#include <initializer_list>
 #include <vector>
 
 template<typename ValueType, size_t D>
@@ -33,6 +34,12 @@ private:
 
     operator reference() { return array.__data[offset]; }
 
+		template<typename T>
+		reference operator=(T const& t) {
+			static_assert(NumDims == I, "not enough indices");
+			return array.__data[offset] = t;
+		}
+
     helper<I + 1> operator[](size_t i) const {
       return helper<I + 1>{array, i + array.__extents[I] * offset};
     }
@@ -46,6 +53,14 @@ public:
     __data.resize(num_elements());
   }
 
+	// because http://stackoverflow.com/a/12431810
+	my_array(std::initializer_list<unsigned int> extents)
+	{
+		// as above
+    std::copy_n(std::begin(extents), NumDims, std::begin(__extents));
+    __data.resize(num_elements());
+	}
+
   size_t num_dimensions() const
   {
     return NumDims;
@@ -54,7 +69,7 @@ public:
   size_t num_elements() const
   {
     return std::accumulate(std::begin(__extents), std::end(__extents),
-			   1, std::multiplies<size_type>());
+			1, std::multiplies<size_type>());
   }
 
   iterator begin() { return __data.begin(); }
@@ -92,7 +107,7 @@ public:
 namespace hdf5 {
   template <typename ValueType, size_t NumDims>
   void load(handle loc, my_array<ValueType, NumDims>& h,
-	    const char* name)
+		const char* name)
   {
     datatype type = datatype_from<ValueType>::value();
     std::array<hsize_t, NumDims> extents;
@@ -107,7 +122,7 @@ namespace hdf5 {
 
   template <typename ValueType, size_t NumDims>
   void save(handle loc, my_array<ValueType, NumDims> const& h,
-	    const char* name)
+		const char* name)
   {
     datatype type = datatype_from<ValueType>::value();
     std::array<hsize_t, NumDims> extents;
