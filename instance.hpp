@@ -69,8 +69,8 @@ struct instance
     , Rg2W{flatperm.extents}
     , Rm2W{flatperm.extents}
     // initialise sampled_weights and sampled_walks
-    , sampled_weights({flatperm.extents[1]})
-    , sampled_walks  ({flatperm.extents[1], flatperm.extents[0], 2})
+    , sampled_weights({flatperm.extents[1], flatperm.extents[2]})
+    , sampled_walks  ({flatperm.extents[1], flatperm.extents[2], flatperm.extents[0], 2})
   {
   }
 
