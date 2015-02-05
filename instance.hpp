@@ -98,10 +98,10 @@ struct instance
     uint64_t tours = flatperm.Sn.data()[0];
 
     std::cerr << "check point at time " << now << "\n"
-	      << tours << " tours "
-	      << " (" << (double) tours / seconds << " tours/sec) "
-	      << samples << " samples"
-	      << " (" << (double) samples / seconds << " samples/sec)\n";
+        << tours << " tours "
+        << " (" << (double) tours / seconds << " tours/sec) "
+        << samples << " samples"
+        << " (" << (double) samples / seconds << " samples/sec)\n";
   }
 
   void save(hdf5::handle loc) const
